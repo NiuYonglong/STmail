@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>收货地址</title>
+		<link rel="stylesheet" type="text/css" href="../../static/css/site.css"
+			th:href="@{/css/site.css}"/>
+		<link rel="stylesheet" type="text/css" href="../../static/css/center.css"
+			th:href="@{/css/center.css}"/>
+	</head>
+	<body>
+	
+		<div id="header" th:replace="frag::header"></div>
+		
+		<div class="user-center">
+			<div class="container clear">
+				<div class="crumbs">
+					<a href="../index.html">首页</a>
+					<span class="sep">/</span>
+					<a >交易订单</a>
+				</div>
+				
+				<div class="menu">
+					<h3>订单中心</h3>
+					<ul>
+						<li><a href="orderList.html">我的订单</a></li>
+						<li><a href="">评价晒单</a></li>
+						<li><a href="">话费充值订单</a></li>
+						<li><a href="">以旧换新订单</a></li>
+					</ul>
+					
+					<h3>个人中心</h3>
+					<ul>
+						<li><a href="">我的个人中心</a></li>
+						<li class="active"><a href="addr.html">收货地址</a></li>
+						<li><a href="">消息通知</a></li>
+						<li><a href="">购买资格</a></li>
+						<li><a href="">现金账户</a></li>
+						<li><a href="">小米礼品卡</a></li>
+						<li><a href="">现金券</a></li>
+						<li><a href="">喜欢的商品</a></li>
+						<li><a href="">优惠券</a></li>
+						<li><a href="">红包</a></li>
+					</ul>
+					
+					
+					<h3>售后服务</h3>
+					<ul>
+						<li><a href="">服务记录</a></li>
+						<li><a href="">申请服务</a></li>
+						<li><a href="">领取快递报销</a></li>
+					</ul>
+					
+					
+					<h3>账户管理</h3>
+					<ul>
+						<li><a href="">个人信息</a></li>
+						<li><a href="">修改密码</a></li>
+					</ul>
+				</div>
+				<div class="content">
+					<h1 class="title">收货地址<span>请谨防钓鱼链接或诈骗电话，了解更多></span></h1>
+					
+					
+				<ul class="addr-list clear">
+					<li>
+						<div class="add">
+							<i class="mi-icon icon-add"></i>
+							添加新地址
+						</div>
+					</li>
+					<li th:data-id="${addr.id}"
+						th:each="addr : ${addresses}">
+						<div class="name" th:text="${addr.contact}">张三</div>
+						<div class="phone" th:text="${addr.phone}">158****6789</div>
+						<div class="address">
+							<span class="province" th:text="${addr.province}">山东省</span>
+							<span class="city" th:text="${addr.city}">青岛市</span>
+							<span class="area" th:text="${addr.area}">城阳区</span>
+							<span class="town" th:text="${addr.town}">城阳街道</span>
+							<span class="detail" th:text="${addr.detail}">金日紫都 办公楼 A座 中享思途 三楼</span>
+						</div>
+						<div class="actions">
+							<a href="">修改</a>
+							<a href="">删除</a>
+						</div>
+					</li>
+					<li th:data-id="${addr.id}"
+						th:each="addr : ${addresses}">
+						<div class="name" th:text="${addr.contact}">张三</div>
+						<div class="phone" th:text="${addr.phone}">158****6789</div>
+						<div class="address">
+							<span class="province" th:text="${addr.province}">山东省</span>
+							<span class="city" th:text="${addr.city}">青岛市</span>
+							<span class="area" th:text="${addr.area}">城阳区</span>
+							<span class="town" th:text="${addr.town}">城阳街道</span>
+							<span class="detail" th:text="${addr.detail}">金日紫都 办公楼 A座 中享思途 三楼</span>
+						</div>
+					</li>
+				</ul>
+				
+			</div>
+		</div>
+		
+		<!-- 底部 -->
+		<div th:replace="frag::footer" id="footer"></div>
+		
+		<!-- jQuery -->
+		<script type="text/javascript" src="../../static/js/jquery-2.1.4.js" th:src="@{/js/jquery-2.1.4.js}"></script>
+		<script th:if="false">
+			// 动态页面需要去掉
+			$("#header").load("../header.html", function(){
+				$(".logo img").attr("src", "../../static/img/logo-mi.png");
+			});
+			$("#footer").load("../footer.html");
+			
+		</script>
+		<!-- order.js -->
+		<script type="text/javascript" src="../../static/js/order.js" th:src="@{/js/order.js}"></script>
+	</body>
+</html>

@@ -1,0 +1,203 @@
+<blockquote class="layui-elem-quote">添加商品</blockquote>
+
+<form class="layui-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品名</label>
+        <div class="layui-input-inline">
+            <input class="layui-input" type="text" name="name" required placeholder="请输入分类名">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">父分类</label>
+        <div class="layui-input-inline">
+            <select name="parentId" lay-filter="parentId">
+            </select>
+        </div>
+        <label class="layui-form-label">子分类</label>
+        <div class="layui-input-inline">
+            <select name="categoryId" >
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品描述</label>
+        <div class="layui-input-inline">
+            <textarea name="dscp" placeholder="请输入商品描述" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品售价</label>
+        <div class="layui-input-inline">
+            <input type="number" name="price" placeholder="请输入商品出售价格" required class="layui-input" step="0.01">
+        </div>
+        <label class="layui-form-label">标价</label>
+        <div class="layui-input-inline">
+            <input type="number" name="markPrice" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品颜色</label>
+        <div class="layui-input-inline">
+            <input type="text" name="color" class="layui-input" >
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label ">商品版本</label>
+        <div class="layui-input-inline" >
+            <input type="text" name="version" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品库存</label>
+        <div class="layui-input-inline">
+            <input type="number" name="count" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">推荐</label>
+        <div class="layui-input-inline">
+            <input type="radio" name="recom" value="0" title="不推荐" checked>
+            <input type="radio" name="recom" value="1" title="推荐">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">描述</label>
+        <div class="layui-input-inline">
+            <textarea name="dscp" placeholder="请输入分类描述" class="layui-textarea"></textarea>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">图片</label>
+        <div class="layui-input-block">
+            <!--图片上传的控件-->
+            <div class="layui-upload">
+                <button type="button" class="layui-btn" id="test2">多图片上传</button>
+                <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                    预览图：
+                    <div class="layui-upload-list" id="demo2"></div>
+                </blockquote>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <input type="hidden" name="pic">
+            <button type="submit" lay-submit lay-filter="goods-add" class="layui-btn">提交</button>
+        </div>
+
+    </div>
+
+</form>
+
+
+<script>
+    layui.use(['form', 'upload'], function () {
+        var form = layui.form;
+        upload = layui.upload;
+        $ = layui.$;
+
+        form.render();
+
+        var getParentCategory = function (){
+            $.ajax({
+                url: '/api/category',
+                data:{parentId:0},
+                type:'GET',
+                dataType:'json',
+                success:function (result) {
+                    var html = '<option value="" >请选择子分类</option>';
+                    $.each(result.data,function (index,item){
+                        html+='<option value="'+item.id+'">'+item.name+'</option>';
+                    });
+                    $('select[name="parentId"]').html(html);
+                    form.render();
+                },
+                error: function () {
+                    layer.msg('请求失败');
+                }
+            });
+        }
+        getParentCategory();
+
+        form.on('select(parentId)',function (data) {
+            var parentId = data.value;
+            layer.msg(parentId);
+            if(parentId){
+                $.ajax({
+                   url:'/api/category',
+                   data:{parentId:parentId},
+                   type:'get',
+                   dataType:'json',
+                   success:function (result){
+                       var html = '<option value="" >请选择子分类</option>';
+                       $.each(result.data,function (index,item){
+                           html+='<option value="'+item.id+'">'+item.name+'</option>';
+                       });
+                       $('select[name="categoryId"]').html(html);
+                       form.render();
+                   },
+                    error:function (){
+
+                    }
+                });
+            }else {
+                $('select[name="categoryId"]').html('');
+            }
+        })
+
+        form.render();
+
+        //多图片上传
+        upload.render({
+            elem: '#test2'
+            ,url: '/api/upload' //此处配置你自己的上传接口即可
+            ,multiple: true
+            ,before: function(obj){
+
+            }
+            ,done: function(res){
+                //上传完毕
+                $('#demo2').append('<img style="width: 100px; height: 100px;cursor: pointer" src="/upload/'+res.data+'" data-name="'+res.data+'">');
+            }
+        });
+        $('demo2').on('click','img',function () {
+            $(this).remove();
+        })
+
+        form.on('submit(goods-add)',function (data) {
+
+            var pics = [];
+            $('#demo2 img').each(function () {
+                var url = $(this).attr('data-name');
+                pics.push({url:url});
+            });
+
+            data.field.pics = pics;
+
+            $.ajax({
+                url:'api/goods',
+                data:JSON.stringify(data.field),
+                contentType: 'application/json; charset=utf-8',
+                type: 'post',
+                dataType:'json',
+                success: function (result) {
+                    if(result.code == 0) {
+                        layer.msg("添加成功");
+                        openUrl('/goods/index.html');
+                    }
+                    else layer.msg(result.msg);
+                },
+                error: function () {
+                    layer.msg("请求失败");
+                }
+            });
+            return false;
+        });
+    });
+
+</script>

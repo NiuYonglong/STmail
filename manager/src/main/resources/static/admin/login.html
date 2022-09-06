@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>管理员登录</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <script src="/layui/layui.js"></script>
+    <style>
+        body{
+            background-color: #92b8b1;
+        }
+        .layui-form{
+            width: 400px;
+            margin: 0px auto;
+            margin-top: 150px;
+            background-color: white;
+            padding-bottom: 30px;
+            border-radius: 20px;
+        }
+        h1{
+            text-align: center;
+            padding: 30px;
+        }
+    </style>
+</head>
+<body>
+    <form class="layui-form">
+        <h1>管理员登录</h1>
+        <div class="layui-form-item">
+            <label class="layui-form-label">账号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="username" placeholder="请输入账号" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-inline">
+                <input type="password" name="password" placeholder="请输入密码" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">验证码</label>
+            <div class="layui-input-inline" style="width: 80px">
+                <input type="text" name="vercode" placeholder="验证码" class="layui-input">
+            </div>
+            <img src="/vercode" id="vercode" style="cursor: pointer;">
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="login">登录</button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        layui.use(['form'],function () {
+            var form = layui.form,
+                $ = layui.$;
+            $('#vercode').click(function () {
+                $(this).attr("src","/vercode?t="+new Date().getTime());
+            });
+            form.on('submit(login)',function (data) {
+                $.ajax({
+                    url: '/api/admin/login',
+                    data: data.field,
+                    type: 'post',
+                    dataType: 'json',
+                    success: function (result) {
+                        if(result.code == 0){
+                            window.location.href='/';
+                        }else {
+                            layer.msg(result.msg);
+                            $('input[name="vercode"]').val('');
+                            $('#vercode').attr('src','/vercode?t='+new Date().getTime());
+                        }
+                    },
+                    error: function () {
+                        layer.msg("请求失败");
+                    }
+                });
+                return false;
+            });
+        });
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>注册</title>
+		<link rel="stylesheet" type="text/css" href="../../static/css/site.css"/>
+		<link rel="stylesheet" type="text/css" href="../../static/css/login.css"/>
+	</head>
+	<body>
+		<div class="left">
+			<img src="../../static/img/login_bg.jpg" />
+		</div>
+		<div class="right">
+			<div class="header clear">
+				<div class="logo">
+					<a href="../index.html">
+						<img src="../../static/img/logo-mi.png" >
+						<span>小米账号</span>
+					</a>
+				</div>
+				
+				<div class="nav">
+					<ul>
+						<li><a href="">小米帐号</a></li>
+						<li><a href="">用户协议</a></li>
+						<li><a href="">隐私政策</a></li>
+						<li><a href="">帮助中心</a></li>
+					</ul>
+				</div>
+			</div>
+			
+			<form class="form" method="post">
+				<h2><a href="login.html" th:href="@{/user/login}">登录</a>
+					<a class="active" href="reg.html" th:href="@{/user/reg}">注册</a></h2>
+				<input type="text" name="username" placeholder="账号"/>
+				<input type="password" name="password" placeholder="密码"/>
+				<input type="password" name="repassword" placeholder="确认密码"/>
+				<div class="error" th:text="${error}"></div>
+				<input type="submit" value="注册" />
+				<div class="link clear">
+					<a href="" class="left">忘记密码?</a>
+					<a href="" class="right">手机号登录</a>
+				</div>
+				
+				<div class="other">
+					<h2>其它登录方式</h2>
+					<div class="type">
+						<i class="mi-icon icon-wechat"></i>
+						<i class="mi-icon icon-qq"></i>
+						<i class="mi-icon icon-weibo"></i>
+					</div>
+				</div>
+			</form>
+			
+		</div>
+	</body>
+</html>

@@ -1,0 +1,101 @@
+<blockquote class="layui-elem-quote">分类列表</blockquote>
+
+<table id="category-list" lay-filter="category-list"></table>
+
+<script type="text/html" id="category-bar">
+    <a class="layui-btn layui-btn-sm layui-btn-normal" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="del">删除</a>
+</script>
+<script>
+    layui.use('table', function () {
+        var table = layui.table,
+            $ = layui.$;
+
+        //第一个实例
+        table.render({
+            elem: '#category-list'
+            , url: '/api/category' //数据接口
+            , page: true //开启分页
+            , cols: [[ //表头
+                {field: 'id', title: 'ID', sort: true}
+                , {field: 'name', title: '分类名'}
+                , {field: 'dscp', title: '描述'}
+                , {
+                    field: 'pic', title: '图片', templet: function (d) {
+                        if (d.pic != null) {
+                            return '<img src="/upload/' + d.pic + '">';
+                        } else return '';
+                    }
+                }
+                , {
+                    field: 'parentId', title: '父分类', templet: function (d) {
+                        return (d.parent) ? d.parent.name : '';
+                    }
+                }
+                , {
+                    field: 'recom', title: '推荐', sort: true, templet: function (d) {
+                        return ['不推荐', '推荐'][d.recom];
+                    }
+                }
+                , {
+                    field: 'status', title: '状态', sort: true, templet: function (d) {
+                        return ['上架', '下架'][d.status];
+                    }
+                }
+                , {title: '操作', toolbar: '#category-bar'}
+            ]],
+            parseData: function (d) {
+                return {
+                    code: d.code,
+                    msg: d.msg,
+                    count: d.data.total,
+                    data: d.data.list,
+                };
+            },
+
+        });
+
+        table.on('tool(category-list)', function (obj) {
+            //layer.msg('行工具事件');
+            if (obj.event == 'edit') {
+
+                sessionStorage.setItem('category-edit', JSON.stringify(obj.data));
+                layer.open({
+                    type: 2,
+                    title: '编辑分类',
+                    area: ['600px', '600px'],
+                    content: '/category/edit.html',
+                    end: function (){
+                        table.reload('category-list');
+                    }
+                });
+
+            } else if (obj.event == 'del') {
+                layer.msg('del');
+                layer.confirm('确定要删除当前记录吗？', function (index) {
+                    layer.close(index);
+
+
+                    $.ajax({
+                        url: '/api/category',
+                        data: {id: obj.data.id},
+                        type: 'delete',
+                        dataType: 'json',
+                        success: function (result) {
+                            if (result.code == 0) {
+                                layer.msg('删除成功');
+                            } else {
+                                layer.msg(result.msg);
+                            }
+                            table.reload('category-list');
+                        },
+                        error: function () {
+                            layer.msg("错误");
+                        }
+                    });
+                });
+            }
+
+        });
+    });
+</script>
