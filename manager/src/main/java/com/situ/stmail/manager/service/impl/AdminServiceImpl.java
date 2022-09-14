@@ -12,11 +12,6 @@ import org.springframework.stereotype.Service;
 public class AdminServiceImpl implements AdminService {
 
     private AdminMapper adminMapper;
-
-//    public AdminServiceImpl(AdminMapper adminMapper){
-//        this.adminMapper = adminMapper;
-//    }
-
     @Override
     public Admin login(Admin admin) throws Exception {
         if(admin.getUsername()==null||admin.getUsername().length()<2||admin.getUsername().length()>16){

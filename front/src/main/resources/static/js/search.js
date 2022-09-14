@@ -5,15 +5,16 @@
 var allSorts;
 
 // 搜索商品
-function searchGoods(name, goodsSortId, firstSortId){
+function searchGoods(name, categoryId){
+
 	$.ajax({
 		url: '/api/goods/search',
 		type: 'get',
-		data: {name: name, goodsSortId: goodsSortId, firstSortId: firstSortId},
+		data: {name: name, categoryId: categoryId},
 		dataType: 'json',
-		success: function(data){
+		success: function(result){
 			var html = "";
-			$.each(data, function(index, item){
+			$.each(result.data, function(index, item){
 				if ((index+1)%4==0) {
 					html += '<li class="r">';
 				} else {
@@ -22,15 +23,15 @@ function searchGoods(name, goodsSortId, firstSortId){
 				
 				html += '<a href="/goods?id='+item.id+'">\
 							<div class="img">\
-								<img src="upload/'+item.pictures[0].name+'" >\
+								<img src="/upload/'+( (item.pics[0]) ? item.pics[0].url : 'default.png' ) +'" >\
 							</div>\
 							<h2 class="desc">'+item.name+'</h2>\
 							<p class="price">'+item.price+'元 起</p>\
 							<div class="thumbs">\
 								<ul class="clear">';
 				
-				$.each(item.pictures, function(i, pic){
-					html += '<li><img src="upload/'+pic.name+'" ></li>'
+				$.each(item.pics, function(i, pic){
+					html += '<li><img src="/upload/'+pic.url+'" ></li>'
 				});
 									
 				html += '		</ul>\
@@ -56,25 +57,25 @@ function searchGoods(name, goodsSortId, firstSortId){
  */
 function getFirstSort(){
 	$.ajax({
-		url: '/api/goodsSort/getParent',
+		url: '/api/category/getParent',
 		type: 'get',
 		data: {},
 		dataType: 'json',
-		success: function(data){
+		success: function(result){
 			// 保存所有分类信息
-			allSorts = data;
+			allSorts = result.data;
 			
 			var html = '<span class="label">一级分类:</span>';
 			
-			if (goodsSortId == 0){
+			if (categoryId == null){ // 没有传分类，显示全部
 				html += '<li class="active"><a href="javascript:;" data-sort="0">全部</a></li>';
 			} else {
 				html += '<li><a href="javascript:;" data-sort="0">全部</a></li>';
 			}
 				
 			
-			$.each(data, function(index, item){
-				if (item.id == getFirstSortId(data, goodsSortId)){
+			$.each(allSorts, function(index, item){
+				if (item.id == getFirstSortId(allSorts, categoryId)){
 					html += '<li class="active"><a href="javascript:;" data-sort="'+item.id+'">'+item.name+'</a></li>';
 				} else {
 					html += '<li><a href="javascript:;" data-sort="'+item.id+'">'+item.name+'</a></li>';
@@ -84,9 +85,9 @@ function getFirstSort(){
 			$(".first-sort").html(html);
 			
 			// 生成二级分类
-			if (getFirstSortId(data, goodsSortId) != 0){
+			if (categoryId != null){
 				// 调用方法生成代码
-				initSecondSort(data, getFirstSortId(data, goodsSortId));
+				initSecondSort(allSorts, getFirstSortId(allSorts, categoryId));
 			} else {
 				$(".second-sort").hide();
 			}
@@ -104,15 +105,15 @@ function initSecondSort(data, firstSortId){
 			// 遍历 data[i] 里面的二级分类 sonSorts
 			var html = '<span class="label">二级分类:</span>';
 			
-			if (goodsSortId == 0){
+			if (categoryId == getFirstSortId(data, firstSortId)){
 				html += '<li class="active"><a href="javascript:;" data-sort="0">全部</a></li>';
 			} else {
 				html += '<li><a href="javascript:;" data-sort="0">全部</a></li>';
 			}
 			
-			$.each(data[i].sonSorts, function(index, item){
+			$.each(data[i].children, function(index, item){
 				
-				if (item.id == goodsSortId){
+				if (item.id == categoryId){
 					html += '<li class="active"><a href="javascript:;" data-sort="'+item.id+'">'+item.name+'</a></li>';
 				} else {
 					html += '<li><a href="javascript:;"  data-sort="'+item.id+'">'+item.name+'</a></li>';
@@ -132,12 +133,17 @@ function getFirstSortId(data, secondSortId){
 	// 遍历一级分类
 	for(var i=0; i<data.length; i++){
 		
-		if (data[i].sonSorts == null) continue;
+		if (data[i].children == null) continue;
+
+		// 判断一级分类
+		if (data[i].id == secondSortId){
+			return secondSortId;
+		}
 		
 		// 遍历二级分类
-		for (var j=0; j<data[i].sonSorts.length; j++){
+		for (var j=0; j<data[i].children.length; j++){
 			
-			if (data[i].sonSorts[j].id == secondSortId){
+			if (data[i].children[j].id == secondSortId){
 				return data[i].id;
 			}
 		}
@@ -153,9 +159,9 @@ $(".first-sort").on("click", "a", function(){
 	$(".first-sort li").removeClass("active");
 	$(this).parent().addClass("active");
 	var firstSortId = $(this).attr("data-sort");
-	
-	goodsSortId = 0;
-	
+
+	categoryId = firstSortId;
+
 	// 切换二级分类
 	if (firstSortId != 0){
 		initSecondSort(allSorts, firstSortId);
@@ -164,17 +170,19 @@ $(".first-sort").on("click", "a", function(){
 	}
 	
 	// 重新刷新数据
-	searchGoods(name, goodsSortId, firstSortId);
+	searchGoods(name, categoryId);
 });
 
 $(".second-sort").on("click", "a", function(){
 	$(".second-sort li").removeClass("active");
 	$(this).parent().addClass("active");
-	goodsSortId = $(this).attr("data-sort");
+	categoryId = $(this).attr("data-sort");
 	var firstSortId = $(".first-sort .active a").attr("data-sort");
+
+	if (categoryId == 0) categoryId = firstSortId;
 	
 	// 重新刷新数据
-	searchGoods(name, goodsSortId, firstSortId);
+	searchGoods(name, categoryId);
 });
 
 

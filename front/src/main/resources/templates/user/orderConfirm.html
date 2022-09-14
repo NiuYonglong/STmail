@@ -28,7 +28,7 @@
 							<div class="address">
 								<span class="province" th:text="${addr.province}">山东省</span>
 								<span class="city" th:text="${addr.city}">青岛市</span>
-								<span class="area" th:text="${addr.area}">城阳区</span>
+								<span class="county" th:text="${addr.county}">城阳区</span>
 								<span class="town" th:text="${addr.town}">城阳街道</span>
 								<span class="detail" th:text="${addr.detail}">金日紫都 办公楼 A座 中享思途 三楼</span>
 							</div>
@@ -44,7 +44,7 @@
 						<div class="goods-item clear"
 							th:each="cart : ${carts}" th:data-id="${cart.id}">
 							<div class="img"><img src="../../static/img/big-phone.jpg"
-								th:src="@{'/upload/'+${cart.goods.pictures[0].name}}" ></div>
+								th:src="@{'/upload/'+ ${cart.goods.pics.size()>0?cart.goods.pics[0].url:'default.png'}}" ></div>
 							<div class="name"><a th:href="@{/goods(id=${cart.goodsId})}"
 								th:text="${cart.goods.name+' '+cart.goods.version+' '+cart.goods.color}">
 								Xiaomi Civi 8GB+128GB 闪闪黑</a></div>

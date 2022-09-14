@@ -221,7 +221,7 @@
 		
 		<!-- 底部 -->
 		<div th:replace="frag::footer" id="footer"></div>
-		
+
 		<!-- 引入jQuery -->
 		<script type="text/javascript" src="../static/js/jquery-2.1.4.js" th:src="@{/js/jquery-2.1.4.js}"></script>
 		<!-- 引入search.js -->
@@ -234,11 +234,12 @@
 		<!-- 获取参数 -->
 		<script type="text/javascript">
 		
-			var goodsSortId = [[${param.goodsSortId==null ? 0 : param.goodsSortId}]];
+			var categoryId = [[${param.categoryId==null ? 'null' : param.categoryId}]];
+			//获取参数传的name值
 			var name = "[[${param.name==null ? '' : param.name}]]";
 			
 			// 异步搜索
-			searchGoods(name, goodsSortId);
+			searchGoods(name, categoryId);
 			
 			// 加载一级分类
 			getFirstSort();

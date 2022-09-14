@@ -30,7 +30,7 @@ function initCategory(){
 				
 				// 生成二级分类, 遍历它的二级分类
 				$.each(item.children, function(i, son){
-					html += '<li><a href="/search?goodsSortId='+son.id+'">\
+					html += '<li><a href="/search?categoryId='+son.id+'">\
 							<img src="upload/'+son.pic+'" >\
 							<span>'+son.name+'</span>\
 							</a></li>';

@@ -36,12 +36,12 @@
 				<div class="left">
 					<div class="big">
 						<img src="../static/img/big-phone.jpg" 
-							th:src="@{'/upload/'+${goods.pictures[0].name}}">
+							th:src="@{'/upload/'+${goods.pics.size()>0 ? goods.pics[0].url:'default.png'}}">
 					</div>
 					<div class="list" >
-						<img th:each="pic : ${goods.pictures}"
+						<img th:each="pic : ${goods.pics}"
 							src="../static/img/big-phone.jpg"
-							th:src="@{'/upload/' + ${pic.name} }" >
+							th:src="@{'/upload/' + ${pic.name }" >
 					</div>
 				</div>
 				<div class="right">
@@ -67,15 +67,7 @@
 							<li class="active" th:text="${goods.color}">闪闪黑</li>
 						</ul>
 					</div>
-					
-					<div class="info-box">
-						<div class="title">
-							选择套装
-						</div>
-						<ul class="info-list clear">
-							<li class="active" th:text="${goods.suit}">标准版</li>
-						</ul>
-					</div>
+
 					
 					<p class="total" th:text="${ '总计：' + goods.price + '元' }">总计：2599元</p>
 					<div class="btn">

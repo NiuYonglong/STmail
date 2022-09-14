@@ -44,7 +44,7 @@
 					<div class="pay-type">
 						<h3>账户余额</h3>
 						<form th:action="@{/user/order/pay}" method="post" id="pay">
-							<input type="hidden" name="id" th:value="${param.orderId}"/>
+							<input type="hidden" name="id" th:value="${param.id}"/>
 							<input type="password" name="paypwd" id="paypwd" placeholder="支付密码" maxlength="6"/>
 							<label for="paypwd" class="paypwd">&nbsp;
 								<ul>
@@ -121,6 +121,6 @@
 			
 			$(".btn-pay").attr("href", "pay.html");
 		</script>
-		<script src="../../static/js/pay.js" th:src="${/js/pay.js}" type="text/javascript" charset="utf-8"></script>
+		<script src="../../static/js/pay.js" th:src="@{/js/pay.js}" type="text/javascript" charset="utf-8"></script>
 	</body>
 </html>

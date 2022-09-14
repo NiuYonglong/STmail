@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>StMall-后台管理</title>
+    <title>后台管理</title>
     <link rel="stylesheet" href="./layui/css/layui.css">
 </head>
 <body>
@@ -32,8 +32,11 @@
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item layui-hide layui-show-md-inline-block">
                 <a href="javascript:;">
+
+                    <!--管理员头像-->
                     <img src="//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"
                          class="layui-nav-img">
+                    <!--管理员名称-->
                     <span id="admin-realname"></span>
                 </a>
                 <dl class="layui-nav-child">
@@ -42,6 +45,7 @@
                     <dd><a href="javascript:;" id="logout">退出系统</a></dd>
                 </dl>
             </li>
+
             <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
                 <a href="javascript:;">
                     <i class="layui-icon layui-icon-more-vertical"></i>
@@ -93,7 +97,7 @@
 
     <div class="layui-body">
         <!-- 内容主体区域 -->
-        <div style="padding: 15px;">内容主体区域。记得修改 layui.css 和 js 的路径</div>
+        <div style="padding: 15px;">欢迎使用</div>
     </div>
 
     <div class="layui-footer">
@@ -101,6 +105,7 @@
         底部固定区域
     </div>
 </div>
+
 <script src="./layui/layui.js"></script>
 <script>
     //JS

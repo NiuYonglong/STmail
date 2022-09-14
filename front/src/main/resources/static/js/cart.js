@@ -8,21 +8,21 @@ getCarts();
 //1. ajax请求获取所有的购物车信息, 
 function getCarts(){
 	$.ajax({
-		url: '/api/cart/getAll',
+		url: '/api/user/cart/getAll',
 		type: 'get',
 		data: {},
 		dataType: 'json',
-		success: function(data){
+		success: function(result){
 			var html = "";
 			
-			$.each(data, function(index, item){
+			$.each(result.data, function(index, item){
 				html += '<div class="cart-goods clear">\
 									<div class="col col-check">\
 								'+((item.count != 0)?'<input type="checkbox"  name="cartId" class="all" id="cart-'+item.id+'" value="'+item.id+'"/>\
 								<label for="cart-'+item.id+'"></label>' : '')+'  \
 							</div>\
 							<div class="col col-img">\
-								<a href=""><img src="upload/'+item.goods.pictures[0].name+'" /></a>\
+								<a href=""><img src="/upload/'+( item.goods.pics.length>0 ? item.goods.pics[0].url:'default.png' )+'" /></a>\
 							</div>\
 							<div class="col col-name">\
 								<a href="/goods?id='+item.goods.id+'">'
@@ -42,7 +42,7 @@ function getCarts(){
 								'+item.goods.price*item.count+'元\
 							</div>\
 							<div class="col col-action">\
-								<a href="javascript:;" data-id="'+item.id+'"><i class="mi-icon icon-close"></i></a>\
+								<a href="javascript:;" class="del" data-id="'+item.id+'"><i class="mi-icon icon-close"></i></a>\
 							</div>\
 						</div>';
 			});
@@ -50,7 +50,7 @@ function getCarts(){
 			$(".cart-list").html(html);
 			
 			// 设置商品的总数
-			$(".all-count").text(data.length);
+			$(".all-count").text(result.data.length);
 		},
 		error: function(){
 			
@@ -83,39 +83,20 @@ $(".cart-list").on("click", ".add", function(){
 // 更新服务器里的操作
 function updateCart(id, count){
 	$.ajax({
-		url: '/api/cart/update',
+		url: '/api/user/cart/update',
 		type: 'get',
 		data: {id: id, count: count},
 		dataType: 'json',
-		success: function(data){
-			// 无论成功与失败, 都给我返回一个当前购物车真实的数量
-			// 将数量重新写到页面中
-			if (data.status != 1) {
-				// 显示错误信息
-				alert(data.msg)
+		success: function(result){
+			if(result.code == 0){
+
+			}else {
+				alert("result.msg")
 			}
-			
-			// 重写数量
-			$("#cart-"+data.data.id)
-				.parents(".cart-goods")
-				.find(".count").text(data.data.count)
-				
-			// 重写小计
-			var price = $("#cart-"+data.data.id)
-				.parents(".cart-goods")
-				.find(".col-price span").text();
-			price = parseFloat(price);
-			
-			// 计算小计
-			$("#cart-"+data.data.id)
-				.parents(".cart-goods")
-				.find(".col-total").text(price*data.data.count+"元");
-			
-			// 重新计算
-			reTotal();
+			getCarts();
 		},
 		error: function(){
-			
+			alert('请求失败');
 		}
 	});
 }
@@ -176,6 +157,29 @@ $("#cart-form").submit(function(){
 	}
 });
 
+$('.cart-list').on("click",".del",function () {
+	if(confirm("确定要删除这个商品吗？")){
+		var id = $(this).attr("data-id");
+		$.ajax({
+			url: '',
+			date: {id:id},
+			type: 'get',
+			dataType: 'json',
+			success: function (result) {
+				if(result.code == 0){
+
+				}else {
+					alert(result.msg);
+				}
+				getCarts();
+			},
+			error: function () {
+
+			}
+
+		});
+	}
+});
 
 
 
